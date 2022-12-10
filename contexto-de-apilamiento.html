@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      width: 100vw;
+      display: grid;
+      place-items: center;
+      box-sizing: border-box;
+      counter-reset: score;
+      background-color: #333;
+    }
+
+    .ground {
+      background-color: rgb(119, 57, 16);
+      border-radius: 10px 10px 30px 30px;
+    }
+
+    .rabbit {
+      background-color: transparent;
+    }
+
+    .phone {
+      position: relative;
+      border: 8px solid black;
+      width: 300px;
+      height: 600px;
+      border-radius: 40px;
+      background-color: #ccefff;
+      box-shadow: 0 0 70px gray;
+    }
+
+    input[type=checkbox] {
+      appearance: none;
+      cursor: pointer;
+      height: 110px;
+      margin: 0;
+      position: relative;
+      top: 0;
+      width: 80px;
+      z-index: 2;
+      opacity: .3;
+      border-radius: 50px;
+    }
+    
+    input[type=checkbox]:focus {
+      appearance: none;
+      outline: none;
+    }
+
+    input:checked {
+      counter-increment: score;
+    }
+
+    .arm-left, .arm-right{
+      position: absolute;
+      top: 50px;
+      width: 30px;
+      height: 10px;
+      background-color: white;
+      border-radius: 10px;
+      z-index: -1;
+      box-shadow: 0 0 8px rgb(0 0 0 / 30%);
+    }
+    .arm-left {
+      left: 10px;
+    }
+    .arm-right {
+      right: 10px;
+    }
+
+    .arm-left::after, .arm-left::before, .arm-right::after, .arm-right::before{
+      content: '';
+      display: inline-block;
+      width: 5px;
+      height: 1px;
+      position: absolute;
+      border-radius: 3px;
+      background-color: rgba(0, 0, 0, 0.774);
+    }
+
+    .arm-left::after {
+      top: 3px;
+      left: 0;
+    }
+    .arm-left::before {
+      top: 6px;
+      left: 0;
+    }
+
+    .arm-right::before {
+      right: 0;
+      top: 3px;
+    }
+
+    .arm-right::after {
+      right: 0;
+      top: 6px;
+    }
+
+    input:hover ~ .arm-left{
+      left: -15px;
+      animation: hand-left .2s linear infinite;
+      transition: .3s;
+    }
+
+    input:hover ~ .arm-right{
+      right: -15px;
+      animation: hand-right .2s linear infinite;
+      transition: .3s;
+    }
+
+    @keyframes hand-left {
+      0%{
+        transform-origin: right;
+        transform: rotate(0deg);
+      }
+      50%{
+        transform-origin: right;
+        transform: rotate(-45deg);
+      }
+      100%{
+        transform-origin: right;
+        transform: rotate(0deg);
+      }
+    }
+
+    @keyframes hand-right {
+      0%{
+        transform-origin: left;
+        transform: rotate(0deg);
+      }
+      50%{
+        transform-origin: left;
+        transform: rotate(45deg);
+      }
+      100%{
+        transform-origin: left;
+        transform: rotate(0deg);
+      }
+    }
+
+    .total-count {
+      font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+      font-size: 26px;
+      margin-top: 20px;
+      text-align: center;
+      color: palevioletred;
+    }
+
+    .total-count::after {
+      margin: auto;
+      content: counter(score)'/4';
+    }
+    
+    @keyframes layer {
+      0%{
+        transform: translateY(-80px);
+      }
+      50%{
+        transform: translateY(50px);
+      }
+      100%{
+        transform: translateY(-80px);
+      }
+    }
+
+    .layer-1 {
+      position: absolute;
+      z-index: 1;
+      height: fit-content;
+      width: 80px;
+      top: 150px;
+      right: 60px;
+
+      animation: layer 2s ease-in-out infinite;
+    }
+
+    .layer-2 {
+      position: absolute;
+      z-index: 2;
+      height: fit-content;
+      width: 80px;
+      top: 150px;
+      left: 60px;
+
+      animation: layer 1.5s ease-in-out infinite;
+    }
+
+    .layer-3 {
+      position: absolute;
+      z-index: 3;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      margin: 0 auto;
+      width: 230px;
+      height: 400px;
+      box-shadow: 0 0 10px black;
+    }
+
+    .layer-4 {
+      position: absolute;
+      z-index: 4;
+      height: fit-content;
+      width: 80px;
+      top: 300px;
+      left: 30px;
+
+      animation: layer 1.3s ease-in-out infinite;
+    }
+
+    .layer-5 {
+      position: absolute;
+      z-index: 5;
+      bottom: 0;
+      width: 200px;
+      height: 250px;
+      box-shadow: 0 0 10px black;
+    }
+
+    .layer-6 {
+      position: absolute;
+      z-index: 6;
+      height: fit-content;
+      width: 80px;
+      top: 400px;
+      right: 40px;
+
+      animation: layer .9s ease-in-out infinite;
+    }
+
+    .layer-7 {
+      position: absolute;
+      z-index: 7;
+      bottom: 0;
+      right: 0;
+      width: 170px;
+      height: 150px;
+      box-shadow: 0 0 10px black;
+    }
+
+    .layer-8 {
+      position: absolute;
+      z-index: 8;
+      width: 100px;
+      height: 100px;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      margin: 0 auto;
+      background-color: yellowgreen;
+      box-shadow: 0 0 10px black;
+      border-radius: 50px 50px 0 0;
+    }
+
+    .layer-8::after, .layer-8::before {
+      content: '';
+      display: inline-block;
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      background-color: yellowgreen;
+      border-radius: 50%;
+      z-index: 1;
+    }
+    
+    .layer-8::after {
+      top: -10px;
+      left: -40px;
+    }
+
+    .layer-8::before {
+      top: -20px;
+      right: -30px;
+    }
+
+    .layer-9 {
+      position: absolute;
+      z-index: 9;
+      width: 110px;
+      height: 110px;
+      bottom: 0;
+      right: 0;
+      background-color: green;
+      border-radius: 50px 10px 30px 0;
+    }
+
+    .layer-9::after, .layer-9::before {
+      content: '';
+      display: inline-block;
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      background-color: green;
+      border-radius: 50%;
+      z-index: 1;
+    }
+    
+    .layer-9::after {
+      top: 30px;
+      left: -30px;
+    }
+
+    .layer-9::before {
+      top: -20px;
+      right: 0px;
+    }
+
+    .layer-10 {
+      position: absolute;
+      z-index: 9;
+      width: 110px;
+      height: 110px;
+      bottom: 0;
+      left: 0;
+      background-color: green;
+      border-radius: 20px 30px 0 30px;
+    }
+
+    .layer-10::after, .layer-10::before {
+      content: '';
+      display: inline-block;
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      background-color: green;
+      border-radius: 50%;
+      z-index: 1;
+    }
+    
+    .layer-10::after {
+      top: -30px;
+      left: 10px;
+    }
+
+    .layer-10::before {
+      top: 30px;
+      right: -30px;
+    }
+
+    .ear-left {
+      background-color: pink;
+      width: 10px;
+      height: 70px;
+      position: absolute;
+      top: 0;
+      left: 15px;
+      border: 5px solid white;
+      border-radius: 50%;
+      z-index: -1;
+      transform: rotate(-10deg);
+      box-shadow: 0 0 8px rgba(0, 0, 0, .3);
+
+      animation: ears-left .6s ease-in-out infinite;
+    }
+
+    .ear-right {
+      background-color: pink;
+      width: 10px;
+      height: 70px;
+      position: absolute;
+      top: 0;
+      right: 15px;
+      border: 5px solid white;
+      border-radius: 50%;
+      z-index: -1;
+      box-shadow: 0 0 8px rgba(0, 0, 0, .3);
+
+      animation: ears-right .6s linear infinite;
+    }
+
+    @keyframes ears-right {
+      0%{
+        transform: rotate(3deg);
+      }
+
+      50%{
+        transform: rotate(20deg);
+      }
+
+      100%{
+        transform: rotate(3deg);
+      }
+    }
+
+    @keyframes ears-left {
+      0%{
+        transform: rotate(-3deg);
+      }
+
+      30%{
+        transform: rotate(-20deg);
+      }
+
+      100%{
+        transform: rotate(-3deg);
+      }
+    }
+
+    .head {
+      background-color: white;
+      width: 80px;
+      height: 80px;
+      border-radius: 80px;
+      position: absolute;
+      top: 30px;
+      box-shadow: 0 0 8px rgba(0, 0, 0, .3);
+    }
+
+    .eyes {
+      background-color: black;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      position: absolute;
+      top: 12px;
+
+      /* animaciones */
+      animation-name: blink;
+      animation-duration: 1.5s;
+      animation-iteration-count: infinite;
+    }
+
+    @keyframes blink {
+      0% {
+        transform: scaleY(1);
+      }
+      5% {
+        transform: scaleY(.2);
+      }
+      10%{
+        transform: scaleY(1);
+      }
+    }
+
+    .eye-left {
+
+      left: 30px;
+    }
+
+    .eye-right {
+      right: 30px;
+    }
+
+    .nose {
+      background-color: palevioletred;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      position: absolute;
+      top: 21px;
+      left: 0;
+      right: 0;
+      margin: 0 auto;
+    }
+
+    .tail {
+      width: 20px;
+      height: 20px;
+      background-color: white;
+      border-radius: 50%;
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      right: 0;
+      margin: 0 auto;
+      box-shadow: 0 0 8px rgba(0, 0, 0, .3);
+      z-index: -1;
+
+      animation: tails .3s linear infinite;
+    }
+
+    @keyframes tails {
+      0%{
+        transform-origin: top;
+        transform: rotate(3deg);
+      }
+
+      50%{
+        transform-origin: top;
+        transform: rotate(80deg);
+      }
+
+      100%{
+        transform-origin: top;
+        transform: rotate(3deg);
+      }
+    }
+
+    .div-ground {
+      border-top: 10px solid rgb(18, 184, 12);
+      border-radius: 10px 10px 0 0;
+      width: 100%;
+      height: 20px;
+      background: linear-gradient(135deg, rgb(18, 184, 12) 25%, transparent 25%) -10px 0,
+      linear-gradient(-135deg, rgb(18, 184, 12) 25%, transparent 25%) -10px 0,
+      linear-gradient(45deg, rgb(119, 57, 16) 25%, transparent 25%),
+      linear-gradient(-45deg, rgb(119, 57, 16) 25%, rgba(151, 73, 21, 0.822) 25%);
+      background-size: 20px 20px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="phone">
+    <div class="layer-1 rabbit">
+      <input type="checkbox">
+      <div class="ear-left"></div>
+      <div class="ear-right"></div>
+      <div class="head">
+        <div class="eye-left eyes"></div>
+        <div class="eye-right eyes"></div>
+        <div class="nose"></div>
+      </div>
+      <div class="arm-left"></div>
+      <div class="arm-right"></div>
+      <div class="tail"></div>
+    </div>
+    <div class="layer-2 rabbit">
+      <input type="checkbox">
+      <div class="ear-left"></div>
+      <div class="ear-right"></div>
+      <div class="head">
+        <div class="eye-left eyes"></div>
+        <div class="eye-right eyes"></div>
+        <div class="nose"></div>
+      </div>
+      <div class="arm-left"></div>
+      <div class="arm-right"></div>
+      <div class="tail"></div>
+    </div>
+    <div class="layer-3 ground">
+      <div class="div-ground"></div>
+    </div>
+    <div class="layer-4 rabbit">
+      <input type="checkbox">
+      <div class="ear-left"></div>
+      <div class="ear-right"></div>
+      <div class="head">
+        <div class="eye-left eyes"></div>
+        <div class="eye-right eyes"></div>
+        <div class="nose"></div>
+      </div>
+      <div class="arm-left"></div>
+      <div class="arm-right"></div>
+      <div class="tail"></div>
+    </div>
+    <div class="layer-5 ground">
+      <div class="div-ground"></div>
+    </div>
+    <div class="layer-6 rabbit">
+      <input type="checkbox">
+      <div class="ear-left"></div>
+      <div class="ear-right"></div>
+      <div class="head">
+        <div class="eye-left eyes"></div>
+        <div class="eye-right eyes"></div>
+        <div class="nose"></div>
+      </div>
+      <div class="arm-left"></div>
+      <div class="arm-right"></div>
+      <div class="tail"></div>
+    </div>
+    <div class="layer-7 ground">
+      <div class="div-ground"></div>
+    </div>
+    <div class="layer-8 bush"></div>
+    <div class="layer-9 bush"></div>
+    <div class="layer-10 bush"></div>
+    <h1 class="total-count">Atrapados: </h1>
+  </div>
+</body>
+</html>
